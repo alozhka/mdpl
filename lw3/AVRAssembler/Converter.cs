@@ -1,0 +1,6 @@
+﻿namespace AVRAssembler;
+
+class Converter
+{
+
+}
