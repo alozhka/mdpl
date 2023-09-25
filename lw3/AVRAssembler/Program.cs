@@ -4,43 +4,50 @@ namespace AVRAssembler;
 
 internal abstract class Program
 {
+    public static void Main1(string[] args)
+    {
+        var op = StringParser.ParseToBinaryString("0C94") + StringParser.ParseToBinaryString("3400");
+        var res = Regex.IsMatch(op, @"^1001010[01]{5}110[01]{17}$");
+        res = Regex.IsMatch(op, @"^1001010[01]{5}110[01]{16}$");
+        res = Regex.IsMatch(op, @"1001010[01]{5}110[01]{18}");
+        res = Regex.IsMatch(op, "000011[01]{10}");
+        res = Regex.IsMatch(op, @"^000011[01]{10}$");
+    }
     public static void Main(string[] args)
     {
         var fs = Program.InitStream(/*args[0]*/ "assemblerstring.txt" );
         if (fs is null) return;
 
+        var pc = 0;
         while (fs.EndOfStream is false)
         {
             var line = fs.ReadLine();
             if (line is null) break;
-            line = line[9..^2];
-            var raw = line[..4];
-            // то что получили с файла
-            raw = "3040";
-
-            ParseOperator(raw);
-        }
+            line = line[9..^2]; // убираем ненужное
             
-        
+            for (var i = 0; i < line.Length / 4; i += 4)
+            {
+                Console.Write($"{StringParser.ConvertPc(pc)}: ");
+                
+                var raw = line[i..(i + 4)];
+                Console.Write($"{raw[..2]} {raw[2..4]} ");
+                
+                var op = StringParser.ParseToBinaryString(raw);
+                if (StringParser.Is4BytesOperation(ref op))
+                {
+                    i += 4;
+                    pc += 2;
+                    raw = line[i..(i+4)];
+                    op += StringParser.ParseToBinaryString(raw);
+                }
+                op = InstructionMapper.Convert(op);
+                Console.WriteLine(op);
+                pc += 2;
+            }
+        }
     }
-    private static string ParseOperator(string raw)
-    {
-        Program.SwapBytes(ref raw); // меняем биты местами
-        var op = Convert.ToString(Convert.ToUInt16(raw, 16), 2); // перводим в двоичный вид в строку
-        op = op.PadLeft(16, '0'); // добавляем нули для ргеулярки
-        
-        
-        var match = Regex.Matches(op, "0100([01]{4}([01]{4})[01]{4})");
-        
-        return "";
-    }
-
-    private static void SwapBytes(ref string op)
-    {
-        var temp = op[..2];
-        op = op[2..4];
-        op += temp;
-    }
+    
+    
     private static StreamReader? InitStream(string filename)
     {
         StreamReader? fs = null;
