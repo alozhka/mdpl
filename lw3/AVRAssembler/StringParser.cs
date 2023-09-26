@@ -6,8 +6,8 @@ public abstract class StringParser
 {
     public static bool Is4BytesOperation(ref string binaryOp)
     {
-        return Regex.IsMatch(binaryOp, "1001010[01]{5}110[01]") || // jmp
-               Regex.IsMatch(binaryOp, "1001010[01]{5}111[01]"); // call
+        return Regex.IsMatch(binaryOp, "1001010[01]{5}110[01]") ||  // jmp
+               Regex.IsMatch(binaryOp, "1001010[01]{5}111[01]");    // call
     }
     public static string ParseToBinaryString(string raw)
     {

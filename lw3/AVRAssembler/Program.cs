@@ -1,21 +1,10 @@
-﻿using System.Text.RegularExpressions;
-
-namespace AVRAssembler;
+﻿namespace AVRAssembler;
 
 internal abstract class Program
-{
-    public static void Main1(string[] args)
-    {
-        var op = StringParser.ParseToBinaryString("0C94") + StringParser.ParseToBinaryString("3400");
-        var res = Regex.IsMatch(op, @"^1001010[01]{5}110[01]{17}$");
-        res = Regex.IsMatch(op, @"^1001010[01]{5}110[01]{16}$");
-        res = Regex.IsMatch(op, @"1001010[01]{5}110[01]{18}");
-        res = Regex.IsMatch(op, "000011[01]{10}");
-        res = Regex.IsMatch(op, @"^000011[01]{10}$");
-    }
+{ 
     public static void Main(string[] args)
     {
-        var fs = Program.InitStream(/*args[0]*/ "assemblerstring.txt" );
+        var fs = InitStream(args[0]);
         if (fs is null) return;
 
         var pc = 0;
@@ -25,7 +14,7 @@ internal abstract class Program
             if (line is null) break;
             line = line[9..^2]; // убираем ненужное
             
-            for (var i = 0; i < line.Length / 4; i += 4)
+            for (var i = 0; i < line.Length; i += 4)
             {
                 Console.Write($"{StringParser.ConvertPc(pc)}: ");
                 
@@ -38,9 +27,11 @@ internal abstract class Program
                     i += 4;
                     pc += 2;
                     raw = line[i..(i+4)];
+                    Console.Write($"{raw[..2]} {raw[2..4]}".PadRight(12));
                     op += StringParser.ParseToBinaryString(raw);
-                }
-                op = InstructionMapper.Convert(op);
+                } else Console.Write("".PadRight(12));
+                
+                op = InstructionMapper.BinaryToInstruction(op);
                 Console.WriteLine(op);
                 pc += 2;
             }
@@ -57,7 +48,14 @@ internal abstract class Program
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            if (e is FileNotFoundException)
+            {
+                Console.WriteLine("Файл с таким именем не найден!");
+            }
+            else
+            {
+                Console.WriteLine(e);
+            }
         }
         finally
         {
