@@ -27,18 +27,34 @@ internal abstract class InstructionMapper
         new() { Name = "nop", Mask = "0000000000000000", Regex = "^0000000000000000$" },
     };
 
+    /**
+     * <summary>
+     * Переводит двоичную строку в ассемблерную команду
+     * </summary>
+     * <returns>string?</returns>
+     */
     public static string? BinaryToInstruction(string binaryOp)
     {
         var instruction = MatchInstructionByRegex(binaryOp);
         return instruction is null ? null : InstructionToString(instruction, binaryOp);
     }
 
-    
+    /**
+     * <summary>
+     * Возвращает первую инструкцию, удовлетворяющую регулярному выражению или ничего
+     * </summary>
+     * <returns>Instruction?</returns>
+     */
     private static Instruction? MatchInstructionByRegex(string op)
     {
         return Instructions.FirstOrDefault(instr => Regex.IsMatch(op, instr.Regex));
     }
 
+    /**
+     * <summary>
+     * Переводит инструкцию
+     * </summary>
+     */
     private static string InstructionToString(Instruction instruction, string op)
     {
         var mask = instruction.Mask;
