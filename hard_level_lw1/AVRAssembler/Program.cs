@@ -4,7 +4,7 @@ internal abstract class Program
 {
     public static void Main(string[] args)
     {
-        var fs = InitStream(args[0]);
+        var fs = InitStream(/*args[0]*/"assemblerstring.txt");
         if (fs is null) return;
         
         
@@ -33,7 +33,7 @@ internal abstract class Program
                     op += StringParser.ParseToBinaryString(raw);
                 } else Console.Write("".PadRight(12));                    // Иначе печатаем отступ
                 
-                op = InstructionMapper.BinaryToInstruction(op);           // Переводим двоичную строку в готовый код
+                op = InstructionMapper.BinaryToInstruction(op, pc);           // Переводим двоичную строку в готовый код
                 Console.WriteLine(op);                                    // Печатаем
                 pc += 2;                                                  // Не забываем про счётчик
             }

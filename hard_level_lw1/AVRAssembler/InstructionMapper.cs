@@ -7,7 +7,20 @@ using InstructionMap = Dictionary<char, string>;
 
 internal abstract class InstructionMapper
 {
-    
+    private const int Padding = 20;
+
+    /**
+     * <summary>
+     * Для своих значений свои ключ в маске:
+     * A - адрес в памяти (16 бит)
+     * N - адрес в памяти (8 бит)
+     * P - адрес порта
+     * K - константа (в 10 системе счисления)
+     * X - константа (в 16 системе счисления)
+     * L - номер регистра (начиная с 16)
+     * D, R - номер регистра (начиная с 0)
+     * </summary>
+     */
     private static readonly Instruction[] Instructions =
     {
         new() { Name = "add D,R",  Mask = "000011RDDDDDRRRR", Regex = "^000011[01]{10}$" },
@@ -33,10 +46,10 @@ internal abstract class InstructionMapper
      * </summary>
      * <returns>string?</returns>
      */
-    public static string? BinaryToInstruction(string binaryOp)
+    public static string? BinaryToInstruction(string binaryOp, int programCounter)
     {
         var instruction = MatchInstructionByRegex(binaryOp);
-        return instruction is null ? null : InstructionToString(instruction, binaryOp);
+        return instruction is null ? null : InstructionToString(instruction, binaryOp, programCounter);
     }
 
     /**
@@ -55,7 +68,7 @@ internal abstract class InstructionMapper
      * Переводит инструкцию
      * </summary>
      */
-    private static string InstructionToString(Instruction instruction, string op)
+    private static string InstructionToString(Instruction instruction, string op, int programCounter)
     {
         var mask = instruction.Mask;
         var dict = new InstructionMap();
@@ -73,19 +86,28 @@ internal abstract class InstructionMapper
             }
         }
 
-        NumberConversion(ref dict);
+        var commentary = NumberConversion(ref dict, programCounter);    // получаем комментарий
         
-        // это чудо мутирует список в строку, с которой работаешь через лямбду
-        return dict.Aggregate(instruction.Name, 
-                (current, pair) => current.Replace(pair.Key + "", pair.Value)
-            );
+        // это чудо мутирует список в строку и добавляет комментарий в конец
+        var result = dict.Aggregate(instruction.Name, (current, pair) => current.Replace(pair.Key + "", pair.Value));
+        result = result.PadRight(Padding);
+        result += commentary;
+        return result;
     }
 
-    private static void NumberConversion(ref InstructionMap dict)
+    /**
+     * <summary>
+     * Переводит двоичное число в зависимости от того, где оно используется(по его ключу)
+     * </summary>
+     */
+    private static string NumberConversion(ref InstructionMap dict, int pc)
     {
+        var comment = "";
         if (dict.ContainsKey('A'))
         {
-            dict['A'] = "0x" + Convert.ToString(Convert.ToUInt32(dict['A'], 2) << 1, 16);
+            var num = Convert.ToString(Convert.ToUInt32(dict['A'], 2) << 1, 16).ToUpper();
+            dict['A'] = $"0x{num}";
+            comment = $"; 0x{num}";
         }
         if (dict.ContainsKey('R'))
         {
@@ -97,7 +119,9 @@ internal abstract class InstructionMapper
         }
         if (dict.ContainsKey('P'))
         {
-            dict['P'] = "0x" + Convert.ToString(Convert.ToUInt16(dict['P'], 2), 16);
+            var binary = Convert.ToUInt16(dict['P'], 2);
+            dict['P'] = "0x" + Convert.ToString(binary, 16).ToUpper();
+            comment = $"; {Convert.ToString(binary)}";
         }
         if (dict.ContainsKey('K'))
         {
@@ -105,7 +129,9 @@ internal abstract class InstructionMapper
         }
         if (dict.ContainsKey('X'))
         {
-            dict['X'] = "0x" + Convert.ToString(Convert.ToUInt16(dict['X'], 2), 16);
+            var binary = Convert.ToUInt16(dict['X'], 2);
+            dict['X'] = "0x" + Convert.ToString(binary, 16);
+            comment = $"; {Convert.ToString(binary, 10)}";
         }
         if (dict.ContainsKey('L'))
         {
@@ -118,12 +144,17 @@ internal abstract class InstructionMapper
             {
                 var offset = new string(dict['N'].Select(ch => ch == '0' ? '1' : '0').ToArray());
                 var binary = (Convert.ToInt16(offset, 2) + 1) * 2;
-                dict['N'] = "-" + Convert.ToString(binary);
+                dict['N'] = "-" + Convert.ToString(binary).ToUpper();
+                comment = $"; 0x{Convert.ToString(pc - binary + 2, 16).ToUpper()}";
             }
             else
             {
-                dict['N'] = "+" + Convert.ToString(Convert.ToInt16(dict['N'], 2) << 1);
+                var binary = Convert.ToInt16(dict['N'], 2) << 1;
+                dict['N'] = "+" + Convert.ToString(binary).ToUpper();
+                comment =  $"; 0x{Convert.ToString(pc + binary + 2, 16).ToUpper()}";
             }
         }
+
+        return comment;
     }
 }
