@@ -36,6 +36,7 @@ internal abstract class InstructionMapper
         new() { Name = "brne .N", Mask = "111101NNNNNNN001", Regex = "^111101[01]{7}001$" },
         new() { Name = "rjmp .N", Mask = "1100NNNNNNNNNNNN", Regex = "^1100[01]{12}$" },
         new() { Name = "cbi P,K", Mask = "10011000PPPPPKKK", Regex = "^10011000[01]{8}$" },
+        new() { Name = "sbic P,K", Mask = "10011001PPPPPKKK", Regex = "^10011001[01]{8}$" },
         new() { Name = "cli", Mask = "1001010011111000", Regex = "^1001010011111000$" },
         new() { Name = "nop", Mask = "0000000000000000", Regex = "^0000000000000000$" },
     };
@@ -130,7 +131,7 @@ internal abstract class InstructionMapper
         if (dict.ContainsKey('X'))
         {
             var binary = Convert.ToUInt16(dict['X'], 2);
-            dict['X'] = "0x" + Convert.ToString(binary, 16);
+            dict['X'] = "0x" + Convert.ToString(binary, 16).ToUpper();
             comment = $"; {Convert.ToString(binary, 10)}";
         }
         if (dict.ContainsKey('L'))
