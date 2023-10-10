@@ -12,7 +12,7 @@ internal abstract class Program
         while (fs.EndOfStream is false)                     // Проходимся по всем строкам до конца файла
         {
             var line = fs.ReadLine();                 // Считывание, если строки нет, то выходим из цикла
-            if (line is null) break;
+            if (line is "") break;
             
             line = line[9..^2];                             // Оставляем только команды
             
