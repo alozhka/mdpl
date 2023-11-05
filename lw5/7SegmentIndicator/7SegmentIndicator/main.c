@@ -5,9 +5,8 @@
 #include <avr/interrupt.h>
 
 
-volatile int button = 0;
-volatile int is_pressed = 0;
-volatile int counter = 0;
+volatile int counterC = 0;
+volatile int counterB = 0;
 
 uint8_t segments[]={
 	// ___GFEDCBA
@@ -23,25 +22,41 @@ uint8_t segments[]={
 	0b01101111, // 9 - A, B, C, D, F, G
 };
 
-ISR(INT0_vect)
+void reset_timer()
 {
-	if(is_pressed == 0)
+	PORTB = segments[0];
+	PORTC = segments[0];
+	PORTD &= ~(1 << PIND3);
+}
+
+void draw_timer(int counterB, int counterC)
+{
+	PORTB = segments[counterB];
+	PORTC = segments[counterC];
+	int bit_to_set = segments[counterC] & 0b01000000; // маска для индикатора 7
+	if(bit_to_set)
 	{
-		is_pressed = 1;
-		PORTB = segments[0];
-		counter = 0;
+		PORTD |= (1 << PIND3);
 	}
 	else
 	{
-		is_pressed = 0;
+		PORTD &= ~(1 << PIND3);	
 	}
+}
+
+ISR(INT0_vect)
+{
+	counterB = 0;
+	counterC = 0;
+	reset_timer();
 }
 
 void setup(void)
 {
-	DDRB = 0xFF;
+	DDRB = 0b01111111;
+	DDRC = 0b11111111;
+	DDRD = 0b00001100; // PIND3 & PIND2
 	
-	DDRD &= ~(1 << PIND2);
 	PORTD |= (1 << PIND2);
 	
 	EIMSK |= (1<<INT0);
@@ -56,18 +71,19 @@ int main(void)
 	
 	while(1)
 	{
-		if(is_pressed == 0)
+		if(counterB == 10)
 		{
-			if(counter < 10)
-			{
-				PORTB = segments[counter++];
-			}
-			else
-			{
-				counter = 0;
-				PORTB = segments[counter++];
-			}
-			_delay_ms(1000);
+			counterB = 0;
+			counterC = 0;
 		}
+		if(counterC == 10)
+		{
+			counterB++;
+			counterC = 0;
+		}
+		
+		draw_timer(counterB, counterC);
+		_delay_ms(1000);
+		counterC++;
 	}
 }
