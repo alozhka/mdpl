@@ -68,4 +68,3 @@ delay6:
 
 
 rjmp main
-cli
