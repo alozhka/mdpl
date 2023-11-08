@@ -1,4 +1,4 @@
-main:
+setup:
 	//setup
 	sbi DDRC,0
 	ldi r24,1
@@ -26,3 +26,4 @@ delay_loop:
 	brne delay_loop
 
 rjmp loop
+cli
