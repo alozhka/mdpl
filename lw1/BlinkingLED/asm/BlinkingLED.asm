@@ -1,29 +1,30 @@
 setup:
-	//setup
 	sbi DDRC,0
-	ldi r24,1
+	ldi r16,1
+	ldi r17,0
 
 loop:
-	eor r24,r24
-	//if
+	or r16,r17
+	; if
 	breq clear_bit
-	//then
+	; then
 	sbi PORTC,0
+	ldi r16,0x00
 	rjmp delay
-	//
+	;
 clear_bit:
-	//else
+	; else
 	cbi PORTC,0
+	ldi r16,0x01
+
 
 delay:
-	ldi r17,0
-	ldi r18,53
-	ldi r19,12
+	ldi	r30,35	; 35
+	ldi	r31,244	; 244
 delay_loop:
-	subi r17,1
-	sbci r18,0
-	sbci r19,0
-	brne delay_loop
+	sbiw	r30,1
+	brne	delay_loop 	
+
 
 rjmp loop
 cli
