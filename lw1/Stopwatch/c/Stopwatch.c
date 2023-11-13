@@ -59,8 +59,8 @@ void setup(void)
 	
 	PORTD |= (1 << PIND2);
 	
-	EIMSK |= (1<<INT0);
-	EICRA |= (1<<ISC01);
+	EIMSK |= (1 << INT0);
+	EICRA |= (1 << ISC01);
 	sei();
 }
 

@@ -38,9 +38,9 @@ ISR(INT0_vect)
 void setup()
 {
 	DDRB = 0xFF;
-	PORTD |= (1<<PD2);
-	EIMSK |= (1<<INT0);
-	EICRA |= (1<<ISC01);
+	PORTD |= (1 << PD2);
+	EIMSK |= (1 << INT0);
+	EICRA |= (1 << ISC01);
 	sei();
 }
 
