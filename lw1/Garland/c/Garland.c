@@ -1,12 +1,12 @@
-#define F_CPU 1000000UL
+п»ї#define F_CPU 1000000UL
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
 /**
-Режимы работы:
-1. Накопление
+Р РµР¶РёРјС‹ СЂР°Р±РѕС‚С‹:
+1. РќР°РєРѕРїР»РµРЅРёРµ
 2.
 3.
 4.
@@ -19,24 +19,12 @@ volatile int i = 0;
 volatile int off_lights_counter = 18;
 
 
-ISR(INT0_vect)
+ISR(INT1_vect)
 {
 	state++;
 	if(state == 6) state = 0;
 }
 
-void setup(void)
-{
-	DDRB = 0xFF;		// все 8
-	DDRC = 0b01111111;	// + 6
-	DDRD = 0b00011111;	// PIND2 на прерывание по изменению состояения, оставшиеся 4 на гирлянду
-	
-	PORTD |= (1 << PIND2);
-	
-	EIMSK |= (1 << INT0);
-	EICRA |= (1 << ISC01);
-	sei();
-}
 
 void draw_accumulation()
 {
@@ -60,26 +48,32 @@ void draw_accumulation()
 	}
 	
 	
-	if ((i == 14) & (i == 15))
+	if ((14 <= i) & (i <= 16))
 	{
-		PORTD = (1 << (i - 14));
+		if ((14 <= off_lights_counter) & (off_lights_counter <= 16))
+		{
+			PORTD |= (1 << (i - 14)) | (1 << PIND3);
+		}
+		else
+		{
+			PORTD = (1 << (i - 14)) | (1 << PIND3);
+		}
 	}
-	else
+	if (i == 17)
 	{
-		PORTD = (1 << PIND2); // на нём кнопка
-	}
-	if ((i == 16) & (i == 17))
-	{
-		PORTD = (1 << (i - 13));
-	}
-	else
-	{
-		PORTD = (1 << PIND2); // на нём кнопка
+		if(off_lights_counter == 18)
+		{
+			PORTD = (1 << PIND4) | (1 << PIND3);
+		}
+		else
+		{
+			PORTD |= (1 << PIND4);
+		}
 	}
 	
 	
 	i++;
-	if(i - 1 == off_lights_counter)
+	if(i == off_lights_counter)
 	{
 		 i = 0;
 		 off_lights_counter--;
@@ -88,13 +82,36 @@ void draw_accumulation()
 	_delay_ms(250);
 }
 
+
+void setup(void)
+{
+	DDRB = 0xFF;		// РІСЃРµ 8
+	DDRC = 0b01111111;	// + 6
+	DDRD = 0b00011111;	// PIND2 РЅР° РїСЂРµСЂС‹РІР°РЅРёРµ РїРѕ РёР·РјРµРЅРµРЅРёСЋ СЃРѕСЃС‚РѕСЏРµРЅРёСЏ, РѕСЃС‚Р°РІС€РёРµСЃСЏ 4 РЅР° РіРёСЂР»СЏРЅРґСѓ
+	
+	PORTD |= (1 << PIND3);
+	
+	EIMSK |= (1 << INT1);
+	EICRA |= (1 << ISC11);
+	sei();
+}
+
+
 int main(void)
 {
 	setup();
 	
     while (1) 
     {
-		draw_accumulation();
+		switch (state)
+		{
+			case 0:
+				draw_accumulation();
+				break;
+			case 1:
+				PORTB = 0xFF;
+				break;
+		}
     }
 }
 

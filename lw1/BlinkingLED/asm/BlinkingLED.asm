@@ -1,4 +1,4 @@
-setup:
+﻿setup:
 	sbi DDRC,0
 	ldi r16,1
 	ldi r17,0
