@@ -30,56 +30,46 @@ void draw_accumulation()
 {
 	if ((0 <= i) & (i <= 7))
 	{
-		PORTB = (1 << i);
+		PORTB &= ~(1 << (i - 1));	// очищаем предыдущий
+		PORTB |= (1 << i);			// ставим текущий
 	}
-	else
-	{
-		PORTB = 0;
-	}
-	
+	if (i == 8) PORTB &= ~(1 << PINB7);
 	
 	if ((8 <= i) & (i <= 13))
 	{
-		PORTC = (1 << (i - 8));
+		PORTC &= ~(1 << (i - 8 - 1));	// очищаем предыдущий
+		PORTC |= (1 << (i - 8));
 	}
-	else
-	{
-		PORTC = 0;
-	}
+	if (i == 14) PORTC &= ~(1 << PINC5);
 	
-	
-	if ((14 <= i) & (i <= 16))
+	if((14 <= i) && (i <= 16))
 	{
-		if ((14 <= off_lights_counter) & (off_lights_counter <= 16))
-		{
-			PORTD |= (1 << (i - 14)) | (1 << PIND3);
-		}
-		else
-		{
-			PORTD = (1 << (i - 14)) | (1 << PIND3);
-		}
+		PORTD &= ~(1 << (i - 14 - 1));	// очищаем предыдущий
+		PORTD |= (1 << (i - 14));
 	}
 	if (i == 17)
 	{
-		if(off_lights_counter == 18)
-		{
-			PORTD = (1 << PIND4) | (1 << PIND3);
-		}
-		else
-		{
-			PORTD |= (1 << PIND4);
-		}
+		PORTD &= ~(1 << PIND2);
+		PORTD |= (1 << PIND4);
 	}
 	
 	
 	i++;
+	
+	if(off_lights_counter == 0)
+	{
+		i = 0;
+		PORTB = 0;
+		PORTC = 0;
+		PORTD = (1 << PIND3);
+		off_lights_counter = 18;
+	}
 	if(i == off_lights_counter)
 	{
 		 i = 0;
 		 off_lights_counter--;
 	}
-	if(off_lights_counter == 0) off_lights_counter = 18;
-	_delay_ms(250);
+	_delay_ms(100);
 }
 
 
