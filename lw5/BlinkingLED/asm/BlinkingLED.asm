@@ -1,4 +1,4 @@
-﻿setup:
+setup:
 	sbi DDRC,0
 	ldi r16,1
 	ldi r17,0
@@ -19,8 +19,8 @@ clear_bit:
 
 
 delay:
-	ldi	r30,35	; 35
-	ldi	r31,244	; 244
+	ldi	r30,35
+	ldi	r31,244
 delay_loop:
 	sbiw	r30,1
 	brne	delay_loop 	
