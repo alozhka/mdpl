@@ -1,2 +1,0 @@
-﻿.equ DDR_B = 0x04
-.equ PORT_B = 0x05
