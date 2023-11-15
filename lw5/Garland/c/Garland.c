@@ -4,52 +4,51 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
+#include <stdint.h>
+
 
 /**
 Режимы работы:
 0. Накопление слева направо
-1. Накопление вцентр
-2. Накопление рандомное
+1. Накопление в центр
+2. Уменьшение налево
 */
-volatile int state = 2;
-volatile int i = 0;
-volatile int off_lights_counter = 18;
+volatile uint8_t state = 0;
+volatile uint8_t i = 0;
+volatile uint8_t off_lights_counter = 18;
+
+volatile uint32_t garland_value = 0;
 
 
 void reset_garland()
 {
-	PORTB = 0;
-	PORTC = 0;
-	PORTD = (1 << PIND2);
+	garland_value = 0;
+	PORTB &= 0b11000000;
+	PORTC &= 0b11000000;
+	PORTD &= 0b11000100;
 }
 void fill_garland()
 {
-	PORTB = 0xFF;
-	PORTC = 0xFF;
-	PORTD = 0b11111100;
+	garland_value = 0xFFFF;
+	PORTB |= 0b00111111;
+	PORTC |= 0b00111111;
+	PORTD |= 0b00111011;
+}
+void draw_garland()
+{
+	PORTB = garland_value & 0b00111111;
+	PORTC = (garland_value >> 6) & 0b00111111;
+	
+	int temp = (garland_value >> 12) & 0b00111111;
+	PORTD = temp;
+	//PORTD = ((temp & 0b11111100) << 1) | (1 << PIND2) | (temp & 0b00000011);
+	
 }
 
-void draw_accumulation_to_right()
+void generate_accumulation_to_right()
 {
-	if ((0 <= i) & (i <= 7))
-	{
-		PORTB &= ~(1 << (i - 1));	// очищаем предыдущий
-		PORTB |= (1 << i);			// ставим текущий
-	}
-	if (i == 8) PORTB &= ~(1 << PINB7);
-	
-	if ((8 <= i) & (i <= 13))
-	{
-		PORTC &= ~(1 << (i - 8 - 1));	// очищаем предыдущий
-		PORTC |= (1 << (i - 8));
-	}
-	if (i == 14) PORTC &= ~(1 << PINC5);
-	
-	if((14 <= i) && (i <= 17))
-	{
-		PORTD &= ~(1 << (i - 10 - 1));	// с пина 4 по пин 7
-		PORTD |= (1 << (i - 10));
-	}
+	garland_value &= ~(1 << (i - 1));	// убираю предыдущий
+	garland_value |= (1 << i);			// рисую текущий
 	
 	i++;
 	if(off_lights_counter == 0)
@@ -63,7 +62,6 @@ void draw_accumulation_to_right()
 		i = 0;
 		off_lights_counter--;
 	}
-	_delay_ms(250);
 }
 
 void draw_accumulation_to_center()
@@ -154,9 +152,7 @@ ISR(INT0_vect)
 {
 	i = 0;
 	off_lights_counter = 18;
-	PORTB = 0;
-	PORTC = 0;
-	PORTD = (1 << PIND2);
+	reset_garland();
 	
 	
 	state++;
@@ -168,36 +164,37 @@ ISR(INT0_vect)
 
 void setup(void)
 {
-	DDRB = 0xFF;		// все 8
-	DDRC = 0b01111111;	// + 6
-	DDRD = 0b11111100;	// PIND3 на прерывание по изменению состояения, оставшиеся 4 на гирлянду
+	DDRB = 0b00111111;	// все 6
+	DDRC = 0b00111111;	// + 6
+	DDRD = 0b01111111;	// PIND2 на прерывание по изменению состояения и ещё 6 на гирлянду
 	
 	PORTD |= (1 << PIND2);
 	
 	EIMSK |= (1 << INT0);
 	EICRA |= (1 << ISC01);
-	sei();
+	//sei();
 }
 
 int main(void)
 {
 	setup();
-	PORTB = 0xff;
-	PORTC = 0xff;
-	PORTD = 0xff;
 	
 	while (1)
 	{
 		switch (state)
 		{
 			case 0:
-				draw_accumulation_to_right();
+				generate_accumulation_to_right();
+				draw_garland();
+				_delay_ms(250);
 				break;
+			/*
 			case 1:
 				draw_accumulation_to_center();
 				break;
 			case 2:
 				draw_decreasing_to_left();
+			*/
 		}
 	}
 }
