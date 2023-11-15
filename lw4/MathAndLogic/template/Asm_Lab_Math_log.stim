@@ -1,0 +1,7 @@
+$log PORTB
+$log PINB
+$startlog Asm_Lab_Math_log_output.stim
+#102
+$endrep
+$stoplog
+$break
