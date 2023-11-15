@@ -7,6 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mathematic and logical oper
 EndProject
 Project("{18226A42-8477-4023-8AD2-40C49DA407C9}") = "template", "MathAndLogic\template\template.asmproj", "{59B1D629-9DCC-43ED-A0FD-8AB0E4D622AB}"
 EndProject
+Project("{18226A42-8477-4023-8AD2-40C49DA407C9}") = "op2.ADC", "MathAndLogic\op2.ADC\op2.ADC.asmproj", "{A39B5B73-45DB-4033-9992-9A45DFC3BC7B}"
+EndProject
+Project("{18226A42-8477-4023-8AD2-40C49DA407C9}") = "op25.MULSU", "MathAndLogic\op25.MULSU\op25.MULSU.asmproj", "{5D5ED72F-5884-48CE-BA4E-8C040693051D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR
@@ -17,11 +21,21 @@ Global
 		{59B1D629-9DCC-43ED-A0FD-8AB0E4D622AB}.Debug|AVR.Build.0 = Debug|AVR
 		{59B1D629-9DCC-43ED-A0FD-8AB0E4D622AB}.Release|AVR.ActiveCfg = Release|AVR
 		{59B1D629-9DCC-43ED-A0FD-8AB0E4D622AB}.Release|AVR.Build.0 = Release|AVR
+		{A39B5B73-45DB-4033-9992-9A45DFC3BC7B}.Debug|AVR.ActiveCfg = Debug|AVR
+		{A39B5B73-45DB-4033-9992-9A45DFC3BC7B}.Debug|AVR.Build.0 = Debug|AVR
+		{A39B5B73-45DB-4033-9992-9A45DFC3BC7B}.Release|AVR.ActiveCfg = Release|AVR
+		{A39B5B73-45DB-4033-9992-9A45DFC3BC7B}.Release|AVR.Build.0 = Release|AVR
+		{5D5ED72F-5884-48CE-BA4E-8C040693051D}.Debug|AVR.ActiveCfg = Debug|AVR
+		{5D5ED72F-5884-48CE-BA4E-8C040693051D}.Debug|AVR.Build.0 = Debug|AVR
+		{5D5ED72F-5884-48CE-BA4E-8C040693051D}.Release|AVR.ActiveCfg = Release|AVR
+		{5D5ED72F-5884-48CE-BA4E-8C040693051D}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{59B1D629-9DCC-43ED-A0FD-8AB0E4D622AB} = {7B291936-54AD-4761-9F76-04743E937A0F}
+		{A39B5B73-45DB-4033-9992-9A45DFC3BC7B} = {7B291936-54AD-4761-9F76-04743E937A0F}
+		{5D5ED72F-5884-48CE-BA4E-8C040693051D} = {7B291936-54AD-4761-9F76-04743E937A0F}
 	EndGlobalSection
 EndGlobal
