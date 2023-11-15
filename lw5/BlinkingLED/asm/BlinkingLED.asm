@@ -27,4 +27,3 @@ delay_loop:
 
 
 rjmp loop
-cli
