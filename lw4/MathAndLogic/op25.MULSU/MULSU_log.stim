@@ -3,26 +3,26 @@ $log OCR0B
 $log SREG
 $startlog MULSU_log_output.stim
 
-#5
+#2
 OCR0A = 255
 OCR0B = 1
 
-#7
+#8
 OCR0A = 128
 OCR0B = 1
 
-#7
+#8
 OCR0A = 127
 OCR0B = 2
 
-#7
+#8
 OCR0A = 255
 OCR0B = 255
 
-#7
+#8
 OCR0A = 0
 OCR0B = 0
 
-#7
+#8
 $stoplog
 $break

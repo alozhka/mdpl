@@ -1,10 +1,10 @@
 $log OCR0A
 $log OCR0B
 $log SREG
-$startlog ADC_log_output.stim
+$startlog SBCI_log_output.stim
 
 #2
-OCR0A = 15
+OCR0A = 16
 OCR0B = 1
 
 #7
@@ -12,7 +12,7 @@ OCR0A = 128
 OCR0B = 0
 
 #7
-OCR0A = 127
+OCR0A = 128
 OCR0B = 1
 
 #7
@@ -20,8 +20,8 @@ OCR0A = 0
 OCR0B = 0
 
 #7
-OCR0A = 255
-OCR0B = 1
+OCR0A = 256
+OCR0A = 1
 
 #7
 OCR0A = 0
