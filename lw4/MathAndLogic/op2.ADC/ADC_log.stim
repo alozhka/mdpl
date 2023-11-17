@@ -3,7 +3,6 @@ $log OCR0B
 $log SREG
 $startlog ADC_log_output.stim
 
-#2
 OCR0A = 15
 OCR0B = 1
 

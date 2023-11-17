@@ -1,9 +1,5 @@
-reset:
-	rjmp main
-
-main:
+setup:
 	nop
-
 loop:
 	; ввод 
 	in r18, OCR0A
