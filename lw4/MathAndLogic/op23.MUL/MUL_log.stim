@@ -3,7 +3,6 @@ $log OCR0B
 $log SREG
 $startlog MUL_log_output.stim
 
-#2
 OCR0A = 255
 OCR0B = 1
 
