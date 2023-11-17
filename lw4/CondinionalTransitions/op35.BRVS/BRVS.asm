@@ -1,12 +1,23 @@
-;
-; op35.BRVS.asm
-;
-; Created: 16.11.2023 23:00:46
-; Author : РЎРµСЂРіРµР№
-;
+setup:
+	nop
+loop:
+	; ввод
+	in r18,OCR0A
+	in r19,OCR0B
+	; изменения флагов
+	add r18,r19
+	brvs overflow_is_setted
+	; overflow is not setted
+	ldi r18,0
+	rjmp output
 
+overflow_is_setted:
+	ldi r18,1
+	; выравниваю, чтобы было одинаковое количество тактов
+	; и при V==0 и при V==1
+	nop
 
-; Replace with your application code
-start:
-    inc r16
-    rjmp start
+output:
+	out OCR0A,r18
+
+rjmp loop

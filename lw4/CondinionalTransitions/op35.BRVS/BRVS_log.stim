@@ -1,0 +1,14 @@
+$log OCR0A
+$log OCR0B
+$startlog BRVS_log_output.stim
+
+OCR0A = 127
+OCR0B = 1
+
+#10
+OCR0A =  2
+OCR0B = 2
+
+#10
+$stoplog
+$break
