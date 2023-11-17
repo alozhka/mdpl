@@ -3,7 +3,6 @@ $log OCR0B
 $log SREG
 $startlog SUB_log_output.stim
 
-#2
 OCR0A = 16
 OCR0B = 1
 
@@ -22,6 +21,10 @@ OCR0B = 0
 #7
 OCR0A = 256
 OCR0B = 1
+
+#7
+OCR0A = 127
+OCR0B = 0xFF
 
 #7
 $stoplog

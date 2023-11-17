@@ -1,6 +1,4 @@
-reset:
-	rjmp main
-main:
+setup:
 	nop
 loop:
 	; ввод 
