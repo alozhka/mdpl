@@ -1,0 +1,14 @@
+$log OCR0A
+$log OCR0B
+$startlog BRCC_log_output.stim
+
+ACR0A = 255
+ACR0B = 1
+
+#10
+ACR0A = 2
+ACR0B = 2
+
+#10
+$stoplog
+$break
