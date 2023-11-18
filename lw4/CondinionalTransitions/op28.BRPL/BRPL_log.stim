@@ -1,0 +1,14 @@
+$log OCR0A
+$log OCR0B
+$startlog BRPL_log_output.stim
+
+OCR0A = 0
+OCR0B = 0xFF
+
+#10
+OCR0A =  2
+OCR0B = 2
+
+#10
+$stoplog
+$break

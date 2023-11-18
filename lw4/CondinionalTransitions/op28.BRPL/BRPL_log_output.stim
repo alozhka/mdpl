@@ -1,0 +1,9 @@
+#1
+OCR0B = 0xff
+#7
+OCR0A = 0x01
+#3
+OCR0B = 0x02
+OCR0A = 0x02
+#7
+OCR0A = 0x00
