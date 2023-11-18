@@ -1,0 +1,11 @@
+$log OCR0A
+$startlog BRTC_log_output.stim
+
+OCR0A = 2
+
+#9
+OCR0A = 4
+
+#9
+$stoplog
+$break
