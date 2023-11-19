@@ -4,18 +4,18 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>7.0</ProjectVersion>
     <ToolchainName>com.Atmel.AVRAssembler</ToolchainName>
-    <ProjectGuid>{ca05fc4c-dabb-40d1-997a-e1cb43d3f8fe}</ProjectGuid>
+    <ProjectGuid>{cb140144-f568-4ef5-a896-27c4b54748b3}</ProjectGuid>
     <avrdeviceseries>none</avrdeviceseries>
     <avrdevice>ATmega328P</avrdevice>
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.obj</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
     <Language>ASSEMBLY</Language>
-    <AssemblyName>BubbleSort</AssemblyName>
-    <Name>BubbleSort</Name>
-    <RootNamespace>BubbleSort</RootNamespace>
+    <AssemblyName>template</AssemblyName>
+    <Name>template</Name>
+    <RootNamespace>template</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
-    <EntryFile>$(MSBuildProjectDirectory)\BubbleSort.asm</EntryFile>
+    <EntryFile>$(MSBuildProjectDirectory)\template.asm</EntryFile>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
     <CacheFlash>true</CacheFlash>
@@ -80,18 +80,21 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="BubbleSort.asm">
+    <Compile Include="template.asm">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="template_log.stim">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="BubbleSort_oputput_array_dump.stim">
+    <None Include="template_log_output.stim">
       <SubType>Code</SubType>
     </None>
-    <None Include="BubbleSort_output.stim">
+    <None Include="template_log_output_mem_F.stim">
       <SubType>Code</SubType>
     </None>
-    <None Include="BubleSort_log.stim">
+    <None Include="template_log_output_mem_S.stim">
       <SubType>Code</SubType>
     </None>
   </ItemGroup>

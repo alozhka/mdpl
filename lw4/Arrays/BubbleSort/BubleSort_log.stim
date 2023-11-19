@@ -1,0 +1,6 @@
+$startlog BubbleSort_output.stim
+
+#1718
+$stoplog
+$memdump BubbleSort_oputput_array_dump.stim 0x0100 20 s
+$break
