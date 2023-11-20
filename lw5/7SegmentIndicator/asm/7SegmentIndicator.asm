@@ -1,8 +1,6 @@
-.include "macrobaselib.inc"
-
 setup:
     ldi r16,0xFF
-	out	DDR_B,r16    ; весь DDRB на выход
+	out	DDRB,r16    ; весь DDRB на выход
 	
 	ldi	r16, 0b00000001	; 1 (1 << 0)
   	ldi	r17, 0b00000010	; 2 (1 << 1)
@@ -13,7 +11,7 @@ setup:
 
 
 main:
-  	out	PORT_B, r16	; PORTB (1 << 0)
+  	out	PORTB, r16	; PORTB (1 << 0)
 	//задержка
 	ldi	r30, 0x23	; 35
 	ldi	r31, 0xF4	; 244
@@ -22,7 +20,7 @@ delay1:
 	brne delay1
 
 
- 	out	PORT_B,r17	; PORTB (1 << 1)
+ 	out	PORTB,r17	; PORTB (1 << 1)
 	//задержка
 	ldi	r30, 0x23	; 35
 	ldi	r31, 0xF4	; 244
@@ -31,7 +29,7 @@ delay2:
 	brne delay2
 
 
-	out	PORT_B,r18	; PORTB (1 << 2)
+	out	PORTB,r18	; PORTB (1 << 2)
 	//задержка
 	ldi	r30, 0x23	; 35
 	ldi	r31, 0xF4	; 244
@@ -40,7 +38,7 @@ delay3:
 	brne delay3
 
 
-	out	PORT_B,r19	; PORTB (1 << 3)
+	out	PORTB,r19	; PORTB (1 << 3)
 	//задержка
 	ldi	r30, 0x23	; 35
 	ldi	r31, 0xF4	; 244
@@ -49,7 +47,7 @@ delay4:
 	brne delay4
 
 
-	out	PORT_B,r20	; PORTB (1 << 4)
+	out	PORTB,r20	; PORTB (1 << 4)
 	//задержка
 	ldi	r30, 0x23	; 35
 	ldi	r31, 0xF4	; 244
@@ -58,7 +56,7 @@ delay5:
 	brne delay5
 
 
-	out	PORT_B,r21	; PORTB (1 << 5)
+	out	PORTB,r21	; PORTB (1 << 5)
 	//задержка
 	ldi	r30, 0x23	; 35
 	ldi	r31, 0xF4	; 244
