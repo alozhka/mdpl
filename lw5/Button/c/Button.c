@@ -22,7 +22,7 @@ int main(void)
 				PORTB = (0x20 >> i);
 			}
 			PORTB |= (1 << PINB7);
-			_delay_ms(200);
+			_delay_ms(250);
 		}
 	}
 }
