@@ -53,13 +53,9 @@ arr_copy:
 	sbi PORTD,2
 	; найстройка прерываний
 	sbi EIMSK,INT0
-	; EICRA настраиваю нативно,
-	; т.к. компилятор не хочет ставить через out P,Rr
-	ldi r30,0x69 
-	ldi r31,0x00
-	ld r24,Z
+	lds r24,EICRA
 	ori r24,0x02
-	st Z,r24
+	sts EICRA,r24
 	sei
 	; настройка указателя
 	ldi YH,High(segments)
