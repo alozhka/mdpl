@@ -3,6 +3,9 @@
 .def COUNTER = r17
 .def TEMP = r18
 .def NUM_ITEMS = r19
+.def ADAPTED_COUNTER = r20
+
+
 
 
 .dseg
@@ -19,10 +22,10 @@ rjmp main
 rjmp button_handler
 
 button_handler:
-		cpi IS_BUTTON_PRESSED,0
-		brne first_press
-		ldi IS_BUTTON_PRESSED,1
-		rjmp handler_finish
+		ldi COUNTER,0
+		out PORTB,TEMP
+		out PORTC,TEMP
+		cbi PORTD,3
 
 	first_press:
 	; сбросился и остановился
@@ -51,6 +54,7 @@ arr_copy:
 	ldi TEMP,0xFF
 	out DDRB,TEMP
 	sbi PORTD,2
+	sbi PORTD,3
 	; найстройка прерываний
 	sbi EIMSK,INT0
 	lds r24,EICRA
@@ -61,17 +65,29 @@ arr_copy:
 	ldi YH,High(segments)
 	ldi YL,Low(segments)
 	ldi TEMP,0
-
 loop:
 		cpi IS_BUTTON_PRESSED,0
 		brne loop
 
-		cpi COUNTER,10
+		cpi COUNTER,100
 		brlo outer
 		ldi COUNTER,0
 
 	outer:
-	; установка числа в регистр
+	; установка десятка числа
+		mov ADAPTED_COUNTER,COUNTER
+
+
+		add YL,COUNTER
+		adc YH,TEMP
+		; вывод
+		ld r24,Y
+		out PORTB,r24
+		; возвращение указателя обратно
+		sub YL,COUNTER
+		sbc YH,TEMP
+
+	; установка единиц числа
 		add YL,COUNTER
 		adc YH,TEMP
 		; вывод
