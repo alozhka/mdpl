@@ -29,10 +29,10 @@ void reset_garland()
 }
 void fill_garland()
 {
-	garland_value = 0xFFFF;
+	garland_value = 0xFFFFF;
 	PORTB |= 0b00111111;
 	PORTC |= 0b00111111;
-	PORTD |= 0b00111111;
+	PORTD |= 0b01111111;
 }
 void draw_garland()
 {
@@ -63,37 +63,18 @@ void generate_accumulation_to_right()
 	}
 }
 
-void draw_accumulation_to_center()
+void generate_accumulation_to_center()
 {
 	//
 	// правая сторона
 	//
-	if ((0 <= i) & (i <= 3))
-	{
-		PORTD &= ~(0x80 >> (i - 1)); // 0b10000000
-		PORTD |= (0x80 >> i);
-	}
-	if (i == 4) PORTD &= ~(1 << PIND4);
-	
-	if((4 <= i) & (i <= 8))
-	{
-		PORTC &= ~(0x20 >> (i - 4 - 1)); // 0b00100000
-		PORTC |= (0x20 >> (i - 4));
-	}
-	
+	garland_value &= ~(0x20000 >> (i - 1)); // 1 на 17 бите
+	garland_value |= (0x20000 >> i);
 	//
 	// левая сторона
 	//
-	if((0 <= i) & (i <= 7))
-	{
-		PORTB &= ~(1 << (i - 1)); // 0b00100000
-		PORTB |= (1 << i);
-	}
-	if (i == 8)
-	{
-		PORTB &= ~(1 << PINB7);
-		PORTC |= (1 << PINC0);
-	}
+	garland_value &= ~(1ul << (i - 1));
+	garland_value |= (1ul << i);
 	
 	
 	i++;
@@ -108,28 +89,12 @@ void draw_accumulation_to_center()
 		i = 0;
 		off_lights_counter -= 2;
 	}
-	_delay_ms(250);
 }
 
-void draw_decreasing_to_left()
+void generate_decreasing_to_left()
 {
-	if ((0 <= i) & (i <= 3))
-	{
-		PORTD |= (0x80 >> (i - 1));
-		PORTD &= ~(0x80 >> i); // 0b10000000
-	}
-	if(i == 4) PORTD |= (1 << PIND4);
-	if ((4 <= i) & (i <= 9))
-	{
-		PORTC |= (0x20 >> (i - 4 - 1));
-		PORTC &= ~(0x20 >> (i - 4)); // 0b0010000
-	}
-	if (i == 10) PORTC |= (1 << PINC0);
-	if ((10 <= i) & (i <= 17))
-	{
-		PORTB |= (0x80 >> (i - 10 - 1));
-		PORTB &= ~(0x80 >> (i - 10)); // 0b10000000
-	}
+	garland_value |= (0x20000 >> (i - 1));
+	garland_value &= ~(0x20000 >> i); // 0b10000000
 	
 	i++;
 	if(off_lights_counter == 0)
@@ -143,8 +108,6 @@ void draw_decreasing_to_left()
 		i = 0;
 		off_lights_counter--;
 	}
-	_delay_ms(250);
-	
 }
 
 ISR(INT0_vect)
@@ -157,21 +120,20 @@ ISR(INT0_vect)
 	state++;
 	if(state == 3) 
 		state = 0;
-	if (state == 2)
-		fill_garland();
+	if (state == 2) fill_garland();
 }
 
 void setup(void)
 {
 	DDRB = 0b00111111;	// все 6
 	DDRC = 0b00111111;	// + 6
-	DDRD = 0b01111111;	// PIND2 на прерывание по изменению состояения и ещё 6 на гирлянду
+	DDRD = 0b01111011;	// PIND2 на прерывание по изменению состояения и ещё 6 на гирлянду
 	
 	PORTD |= (1 << PIND2);
 	
 	EIMSK |= (1 << INT0);
 	EICRA |= (1 << ISC01);
-	//sei();
+	sei();
 }
 
 int main(void)
@@ -184,17 +146,15 @@ int main(void)
 		{
 			case 0:
 				generate_accumulation_to_right();
-				draw_garland();
 				break;
-			/*
 			case 1:
-				draw_accumulation_to_center();
+				generate_accumulation_to_center();
 				break;
 			case 2:
-				draw_decreasing_to_left();
-			*/
+				generate_decreasing_to_left();
 		}
-		_delay_ms(250);
+		draw_garland();
+		_delay_ms(200);
 	}
 }
 
