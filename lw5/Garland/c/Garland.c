@@ -32,7 +32,7 @@ void fill_garland()
 	garland_value = 0xFFFF;
 	PORTB |= 0b00111111;
 	PORTC |= 0b00111111;
-	PORTD |= 0b00111011;
+	PORTD |= 0b00111111;
 }
 void draw_garland()
 {
@@ -40,15 +40,14 @@ void draw_garland()
 	PORTC = (garland_value >> 6) & 0b00111111;
 	
 	int temp = (garland_value >> 12) & 0b00111111;
-	PORTD = temp;
-	//PORTD = ((temp & 0b11111100) << 1) | (1 << PIND2) | (temp & 0b00000011);
+	PORTD = ((temp & 0b11111100) << 1) | (1 << PIND2) | (temp & 0b00000011);
 	
 }
 
 void generate_accumulation_to_right()
 {
-	garland_value &= ~(1 << (i - 1));	// убираю предыдущий
-	garland_value |= (1 << i);			// рисую текущий
+	garland_value &= ~(1ul << (i - 1));	// убираю предыдущий
+	garland_value |= (1ul << i);		// рисую текущий
 	
 	i++;
 	if(off_lights_counter == 0)
@@ -186,7 +185,6 @@ int main(void)
 			case 0:
 				generate_accumulation_to_right();
 				draw_garland();
-				_delay_ms(250);
 				break;
 			/*
 			case 1:
@@ -196,6 +194,7 @@ int main(void)
 				draw_decreasing_to_left();
 			*/
 		}
+		_delay_ms(250);
 	}
 }
 
