@@ -38,15 +38,7 @@ void draw_stopwatch(int counter)
 {
 	PORTB = segments[counter / 10];
 	PORTC = segments[counter % 10];
-	int bit_to_set = segments[counter % 10] & 0b01000000; // маска для индикатора 7
-	if(bit_to_set)
-	{
-		PORTD |= (1 << PIND3);
-	}
-	else
-	{
-		PORTD &= ~(1 << PIND3);
-	}
+	PORTD = ((segments[counter % 10] & 0b01000000)  >> 3) | 0b00000100; // маска для индикатора 
 }
 
 
@@ -55,7 +47,7 @@ void setup(void)
 {
 	DDRB = 0b01111111;
 	DDRC = 0b11111111;
-	DDRD = 0b00001100; // PIND3 & PIND2
+	DDRD = 0b00001000; // PIND3 & PIND2
 	
 	PORTD |= (1 << PIND2);
 	
