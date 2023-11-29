@@ -5,6 +5,10 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "DinamicIndication", "DinamicIndication\DinamicIndication.cproj", "{DCE6C7E3-EE26-4D79-826B-08594B9AD897}"
 EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "DinamicIndicationByRegisters", "DinamicIndicationByRegisters\DinamicIndicationByRegisters.cproj", "{07FDB2F4-4623-4E85-BD89-16D83B9CA0C2}"
+EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "DinamicIndicationBySPI", "DinamicIndicationBySPI\DinamicIndicationBySPI.cproj", "{F104D638-FCC6-4C3B-9662-CC88AA70CED9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR
@@ -15,6 +19,14 @@ Global
 		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Debug|AVR.Build.0 = Debug|AVR
 		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|AVR.ActiveCfg = Release|AVR
 		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|AVR.Build.0 = Release|AVR
+		{07FDB2F4-4623-4E85-BD89-16D83B9CA0C2}.Debug|AVR.ActiveCfg = Debug|AVR
+		{07FDB2F4-4623-4E85-BD89-16D83B9CA0C2}.Debug|AVR.Build.0 = Debug|AVR
+		{07FDB2F4-4623-4E85-BD89-16D83B9CA0C2}.Release|AVR.ActiveCfg = Release|AVR
+		{07FDB2F4-4623-4E85-BD89-16D83B9CA0C2}.Release|AVR.Build.0 = Release|AVR
+		{F104D638-FCC6-4C3B-9662-CC88AA70CED9}.Debug|AVR.ActiveCfg = Debug|AVR
+		{F104D638-FCC6-4C3B-9662-CC88AA70CED9}.Debug|AVR.Build.0 = Debug|AVR
+		{F104D638-FCC6-4C3B-9662-CC88AA70CED9}.Release|AVR.ActiveCfg = Release|AVR
+		{F104D638-FCC6-4C3B-9662-CC88AA70CED9}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
