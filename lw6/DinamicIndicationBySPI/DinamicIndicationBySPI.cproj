@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>7.0</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC8.C</ToolchainName>
-    <ProjectGuid>{f104d638-fcc6-4c3b-9662-cc88aa70ced9}</ProjectGuid>
+    <ProjectGuid>{7c9c47cf-65fa-4f28-a5a7-211b04ab5c66}</ProjectGuid>
     <avrdevice>ATmega328P</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
     <OutputType>Executable</OutputType>

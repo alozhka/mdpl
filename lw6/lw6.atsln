@@ -7,7 +7,7 @@ Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "DinamicIndication", "Dinami
 EndProject
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "DinamicIndicationByRegisters", "DinamicIndicationByRegisters\DinamicIndicationByRegisters.cproj", "{07FDB2F4-4623-4E85-BD89-16D83B9CA0C2}"
 EndProject
-Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "DinamicIndicationBySPI", "DinamicIndicationBySPI\DinamicIndicationBySPI.cproj", "{F104D638-FCC6-4C3B-9662-CC88AA70CED9}"
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "DinamicIndicationBySPI", "DinamicIndicationBySPI\DinamicIndicationBySPI.cproj", "{7C9C47CF-65FA-4F28-A5A7-211B04AB5C66}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{07FDB2F4-4623-4E85-BD89-16D83B9CA0C2}.Debug|AVR.Build.0 = Debug|AVR
 		{07FDB2F4-4623-4E85-BD89-16D83B9CA0C2}.Release|AVR.ActiveCfg = Release|AVR
 		{07FDB2F4-4623-4E85-BD89-16D83B9CA0C2}.Release|AVR.Build.0 = Release|AVR
-		{F104D638-FCC6-4C3B-9662-CC88AA70CED9}.Debug|AVR.ActiveCfg = Debug|AVR
-		{F104D638-FCC6-4C3B-9662-CC88AA70CED9}.Debug|AVR.Build.0 = Debug|AVR
-		{F104D638-FCC6-4C3B-9662-CC88AA70CED9}.Release|AVR.ActiveCfg = Release|AVR
-		{F104D638-FCC6-4C3B-9662-CC88AA70CED9}.Release|AVR.Build.0 = Release|AVR
+		{7C9C47CF-65FA-4F28-A5A7-211B04AB5C66}.Debug|AVR.ActiveCfg = Debug|AVR
+		{7C9C47CF-65FA-4F28-A5A7-211B04AB5C66}.Debug|AVR.Build.0 = Debug|AVR
+		{7C9C47CF-65FA-4F28-A5A7-211B04AB5C66}.Release|AVR.ActiveCfg = Release|AVR
+		{7C9C47CF-65FA-4F28-A5A7-211B04AB5C66}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
