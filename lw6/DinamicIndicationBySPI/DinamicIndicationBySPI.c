@@ -1,4 +1,4 @@
-#include <avr/io.h>
+﻿#include <avr/io.h>
 
 uint8_t segments[] =
 {
@@ -20,10 +20,11 @@ volatile uint8_t bcd_buffer[] = { 0, 0, 0, 0 };
 
 void initSPI(void)
 {
-	DDRB |= (1 << PINB3 | 1 << PINB5);//настроить MOSI и CLK как выходы
+	DDRB |= (1 << PINB0 | 1 << PINB1 | 1 << PINB3 | 1 << PINB5);//настроить MOSI и CLK как выходы
 	SPSR |= (1 << SPI2X);
 	SPCR = (1 << SPE | 1 << MSTR); //SPI включен, мастер, MSB первый, CPOL=0, CPHA=0
 	PORTB &= ~(1 << PINB3 | 1 << PINB5); //инициализация: DAT=0, CLK=0
+	PORTB |= 1 << PINB0; // OE = 1
 }
 
 void sendSPI (uint8_t data)
@@ -32,14 +33,23 @@ void sendSPI (uint8_t data)
 	while(!(SPSR & (1 << SPIF)));
 }
 
+void setup(void)
+{
+	initSPI();
+}
+
 
 int main(void)
 {
-	initSPI();
-    /* Replace with your application code */
+	setup();
+	PORTB &= ~(1 << PINB0);
+	PORTB |= 1 << PINB1;
+	sendSPI(segments[0]);
+	PORTB &= ~(1 << PINB1);
+	PORTB |= (1 << PINB0);
+	
     while (1) 
     {
-		sendSPI(segments[0]);
     }
 }
 
