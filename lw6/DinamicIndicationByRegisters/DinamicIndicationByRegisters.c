@@ -1,4 +1,4 @@
-#define F_CPU 1000000UL
+ï»¿#define F_CPU 1000000UL
 
 #include <avr/io.h>
 #include <util/delay.h>
@@ -35,10 +35,6 @@ int main(void)
 {
 	InitPorts();
 	InitTimer1();
-	EIMSK |= (1 << INT0); //ðàçðåøèòü ïðåðûâàíèå INT0
-	EICRA |= (1 << ISC01);//Çàïóñê ïî çàäíåìó ôðîíòó INT0
-	sei(); //Ðàçðåøåíèå ïðåðûâàíèé
-	PORTB &= ~(1 << PB0); //OE = low (active)
 	DisplayData(0);
 	while(1)
 	{
@@ -79,6 +75,10 @@ void InitPorts(void)
 	DDRB = (1 << PB0 | 1 << PB1 | 1 << PB3 | 1 << PB5);
 	DDRD &= ~(1 << PD2);
 	PORTD |= (1 << PD2);
+	EIMSK |= (1 << INT0); //Ñ€Ð°Ð·Ñ€ÐµÑˆÐ¸Ñ‚ÑŒ Ð¿Ñ€ÐµÑ€Ñ‹Ð²Ð°Ð½Ð¸Ðµ INT0
+	EICRA |= (1 << ISC01);//Ð—Ð°Ð¿ÑƒÑÐº Ð¿Ð¾ Ð·Ð°Ð´Ð½ÐµÐ¼Ñƒ Ñ„Ñ€Ð¾Ð½Ñ‚Ñƒ INT0
+	sei(); //Ð Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸Ðµ Ð¿Ñ€ÐµÑ€Ñ‹Ð²Ð°Ð½Ð¸Ð¹
+	PORTB &= ~(1 << PB0); //OE = low (active)
 }
 
 void InitTimer1(void)
