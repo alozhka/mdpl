@@ -22,8 +22,6 @@ volatile uint8_t switch_state = 0;
 volatile uint8_t bcd_buffer[] = { 0, 0, 0, 0 };
 
 void InitPorts(void);
-void send_data(uint8_t data, uint8_t ind);
-void InitTimer0(void);
 void Bin2Dec(uint16_t data);
 void InitTimer1(void);
 void StartTimer1(void);
@@ -51,7 +49,7 @@ ISR(TIMER1_COMPA_vect)
 	}
 	else
 	{
-		cnt=0;
+		cnt = 0;
 	}
 }
 ISR(INT0_vect)
@@ -95,7 +93,8 @@ void StartTimer1(void)
 	TIMSK1 |= (1 << OCIE1A);
 }
 
-void StopTimer1(void){
+void StopTimer1(void)
+{
 	TIMSK1 &= ~(1 << OCIE1A);
 }
 
