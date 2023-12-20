@@ -18,7 +18,7 @@ segments: .BYTE arr_size
 .cseg
 
 .org 0x0000
-rjmp main
+rjmp reset
 
 .org INT0addr
 rjmp button_interrupt
@@ -26,6 +26,7 @@ rjmp button_interrupt
 .org 0x0016 ; TIMER1 COMPA
 rjmp timer_interrupt
 
+.org 0x0040
 
 reset:
 	rjmp main
@@ -39,8 +40,6 @@ loop:
 rjmp loop
 
 
-
-.cseg
 segments_flash: .db 0b00111111, 0b00000110, 0b01011011, 0b01001111, 0b01100110, 0b01101101, 0b01111101, 0b00000111, 0b01111111, 0b01101111
 
 
@@ -110,17 +109,17 @@ ret
 
 find_dozens:
 		mov adapted_counter,counter
-		clr r22
+		clr timer_temp
 	dozens_loop:
 		cpi adapted_counter,10
 		brlo find_dozens_finish
 
 		subi adapted_counter,10
-		inc r22
+		inc timer_temp
 	rjmp dozens_loop
 
 	find_dozens_finish:
-	mov adapted_counter,r22
+	mov adapted_counter,timer_temp
 ret
 
 
@@ -147,8 +146,10 @@ get_number_from_array:
 ret
 
 program_spi:
-	ldi iter,9
+	ldi iter,8
 	program_spi_loop:
+		lsl data
+
 		cbi PORTB,5	; clk = 0
 
 		sbrs data,7
@@ -159,10 +160,10 @@ program_spi:
 
 		sbi PORTB,5	; clk = 1
 
-		lsl data
 		dec iter
 	brne program_spi_loop
 ret
+
 
 ;; setup ;;
 
@@ -182,32 +183,34 @@ ret
 
 setup:
 	; установка
-	ldi temp,0b11101000
+	ldi temp,(1 << PINB5 | 1 << PINB3 | 1 << PINB1 | 1 << PINB0)
 	out DDRB,temp
-	sbi PORTB,0
-	cbi DDRD,2
-	sbi PORTD,2
+	cbi PORTB,PINB0
+	cbi DDRD,PINB2
+	sbi PORTD,PINB2
 
 	; найстройка прерываний
 	sbi EIMSK,INT0
-	lds r24,EICRA
-	ori r24,0x02
-	sts EICRA,r24
+	lds temp,EICRA
+	ori temp,0x02
+	sts EICRA,temp
 	sei
 
 	; настройка таймера
 	ldi temp,0
-	out TCCR0A,temp
+	sts TCCR1A,temp
 	sts 0x84,temp ; TCNT1 = 0
-	ldi temp, 0b00001011
-	sts TCCR1B,temp ; TCCR1B = 0b0001011
+	ldi temp,(1 << CS11 | 1 << CS10 | 1 << WGM12)
+	sts TCCR1B,temp
 	ldi	temp, 0x3D	;
 	sts	0x89, temp	;
 	ldi	temp, 0x08	;
-	sts	0x88, temp	; OCR0A = 15625
+	sts	0x88, temp	; OCR1A = 15625
 
 	; настройка указателя
 	ldi YH,High(segments)
 	ldi YL,Low(segments)
+
 	ldi temp,0
+	ldi state,0
 ret
