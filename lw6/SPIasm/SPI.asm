@@ -35,6 +35,7 @@ main:
 	rcall setup
 
 	rcall display_data
+	rcall start_timer
 loop:
 	nop
 rjmp loop
