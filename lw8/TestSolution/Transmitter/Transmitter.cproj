@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>7.0</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC8.C</ToolchainName>
-    <ProjectGuid>dce6c7e3-ee26-4d79-826b-08594b9ad897</ProjectGuid>
+    <ProjectGuid>{5ec57e0f-4bca-4aea-938e-5fe651b27cdb}</ProjectGuid>
     <avrdevice>ATmega328P</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
     <OutputType>Executable</OutputType>
@@ -12,9 +12,9 @@
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>Test</AssemblyName>
-    <Name>Test</Name>
-    <RootNamespace>Test</RootNamespace>
+    <AssemblyName>Transmitter</AssemblyName>
+    <Name>Transmitter</Name>
+    <RootNamespace>Transmitter</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
@@ -120,7 +120,7 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Trasmitter.c">
+    <Compile Include="Transmitter.c">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

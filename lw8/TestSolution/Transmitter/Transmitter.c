@@ -1,11 +1,11 @@
-﻿#define F_CPU 16000000UL
+#define F_CPU 16000000UL
 #define BAUDRATE 9600
 #define CARD_DATA_SIZE 14
 #define BASE_DELAY 100
 #define LED_ERR 5
 #define LED0 6
 #define LED1 7
-#define LEDS_OFF() PORTD &= ~((1 << LED1) | (1 << LED0) | (1< LED_ERR))
+#define LEDS_OFF() PORTD &= ~((1 << LED1) | (1 << LED0) | (1 << LED_ERR))
 
 #include <avr/io.h>
 #include <util/delay.h>
@@ -13,7 +13,7 @@
 
 
 // Массив данных для 4 карт
-volatile char cardData[56] = 
+volatile char cardData[56] =
 {
 	0x02, 0x30, 0x37, 0x30, 0x30, 0x35, 0x34, 0x33, 0x37, 0x41, 0x39, 0x43, 0x44, 0x03,
 	0x02, 0x30, 0x37, 0x30, 0x30, 0x35, 0x34, 0x33, 0x37, 0x41, 0x37, 0x43, 0x33, 0x03,
@@ -46,7 +46,7 @@ void SendPacket(char* dat)
 {
 	int i = 0;
 	while(i < CARD_DATA_SIZE)
-		SendChar(dat[i++]);
+	SendChar(dat[i++]);
 }
 
 void Leds_On(uint8_t value)
@@ -57,11 +57,11 @@ void Leds_On(uint8_t value)
 
 void Delay_Func(uint8_t iteration)
 {
-	//Функция необходима для формирования изменяемой задержки 
+	//Функция необходима для формирования изменяемой задержки
 	//так как delay ms() не принимает изменяемые переменные в качестве параметра
 	int i = 0;
 	while(i++ < iteration)
-		_delay_ms(BASE_DELAY);
+	_delay_ms(BASE_DELAY);
 }
 
 
@@ -83,12 +83,12 @@ int main()
 		//Формирование кадра для отправки
 		shift = cardIdx * CARD_DATA_SIZE;
 		for (int i = 0; i < CARD_DATA_SIZE; i++)
-			sendData[i] = cardData[i + shift];
+		sendData[i] = cardData[i + shift];
 
 		//Внесение ошибки в кадр
 		doError = rand() & 0x01; //
-		if(doError) 
-			sendData[1] = 0x35;
+		if(doError)
+		sendData[1] = 0x35;
 		PORTD |= doError << LED_ERR; //Индикация
 
 		//Отправка данных

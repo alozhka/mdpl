@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Atmel Studio Solution File, Format Version 11.00
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Test", "Test\Test.cproj", "{DCE6C7E3-EE26-4D79-826B-08594B9AD897}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestSolution", "TestSolution", "{4CA1785E-C137-412F-B47A-0706E44012F0}"
+EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Reseiver", "TestSolution\Reseiver\Reseiver.cproj", "{02670E6B-A559-40C8-AEB9-A2780BA74BD3}"
+EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Transmitter", "TestSolution\Transmitter\Transmitter.cproj", "{5EC57E0F-4BCA-4AEA-938E-5FE651B27CDB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,12 +15,20 @@ Global
 		Release|AVR = Release|AVR
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Debug|AVR.ActiveCfg = Debug|AVR
-		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Debug|AVR.Build.0 = Debug|AVR
-		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|AVR.ActiveCfg = Release|AVR
-		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|AVR.Build.0 = Release|AVR
+		{02670E6B-A559-40C8-AEB9-A2780BA74BD3}.Debug|AVR.ActiveCfg = Debug|AVR
+		{02670E6B-A559-40C8-AEB9-A2780BA74BD3}.Debug|AVR.Build.0 = Debug|AVR
+		{02670E6B-A559-40C8-AEB9-A2780BA74BD3}.Release|AVR.ActiveCfg = Release|AVR
+		{02670E6B-A559-40C8-AEB9-A2780BA74BD3}.Release|AVR.Build.0 = Release|AVR
+		{5EC57E0F-4BCA-4AEA-938E-5FE651B27CDB}.Debug|AVR.ActiveCfg = Debug|AVR
+		{5EC57E0F-4BCA-4AEA-938E-5FE651B27CDB}.Debug|AVR.Build.0 = Debug|AVR
+		{5EC57E0F-4BCA-4AEA-938E-5FE651B27CDB}.Release|AVR.ActiveCfg = Release|AVR
+		{5EC57E0F-4BCA-4AEA-938E-5FE651B27CDB}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{02670E6B-A559-40C8-AEB9-A2780BA74BD3} = {4CA1785E-C137-412F-B47A-0706E44012F0}
+		{5EC57E0F-4BCA-4AEA-938E-5FE651B27CDB} = {4CA1785E-C137-412F-B47A-0706E44012F0}
 	EndGlobalSection
 EndGlobal
