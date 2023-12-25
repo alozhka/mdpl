@@ -121,7 +121,8 @@ void SendData (uint8_t data)
 	while(!(SPSR & (1 << SPIF)));
 }
 
-void DisplayData (uint16_t data){
+void DisplayData (uint16_t data)
+{
 	Bin2Dec(data);
 	PORTB &= ~(1 << PINB1);
 	//clk_out = 0
