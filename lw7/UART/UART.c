@@ -5,6 +5,7 @@
 #include <avr/interrupt.h>
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 
@@ -27,6 +28,8 @@ volatile uint16_t display_val = 0;
 volatile uint8_t input_char_counter = 0;
 volatile char command[10] = "";
 volatile char* commandPtr = command;
+volatile uint8_t selectADC = 0;
+volatile uint8_t ADC0 = 0;
 
 
 void InitPorts();
@@ -41,6 +44,7 @@ void SendChar(char symbol);
 void SendString(volatile char* buffer);
 void clearCommand();
 void handleCommand(volatile const char* command);
+char* getSubstring(volatile const char* str, int startIndex, int length);
 
 int main()
 {
@@ -79,7 +83,7 @@ ISR(INT0_vect)
 
 ISR(ADC_vect)
 {
-	display_val = ADC;
+	ADC0 = ADC;
 }
 
 ISR(USART_RX_vect)
@@ -90,8 +94,6 @@ ISR(USART_RX_vect)
 	
 	if (reseivedData == 0x0D)
 	{
-		SendString("\r\n");
-		SendString(command);
 		SendString("\r\n");
 		handleCommand(command);
 		clearCommand();
@@ -117,8 +119,49 @@ void clearCommand()
 
 void handleCommand(volatile const char command[])
 {
+	if (strcmp(getSubstring(command, 0, 4), "set ") == 0) //set data to register
+	{
+		int data = atoi(getSubstring(command, 4, 6));
+		if (data < 9999)
+		{
+			SendString("Set value must be less than 10000!\r\n");
+		}
+		else
+		{
+			display_val = atoi(getSubstring(command, 4, 4));
+		}
+	}
 	
+	if (strcmp(getSubstring(command, 0, 7), "select ") == 0)
+	{
+		selectADC = atoi(getSubstring(command, 7, 1));
+		SendString("Selected ADC: ");
+		SendString(getSubstring(command, 7, 1));
+		SendString("\r\n");
+	}
+	
+	if (strcmp(getSubstring(command, 0, 6), "showADC") == 0)
+	{
+		SendString("Value of ADC 0 = ");
+		SendString((char*)ADC0);
+		SendString("\r\n");
+	}
 }
+
+char* getSubstring(volatile const char* str, int startIndex, int length)
+{
+	char* sub = (char*) malloc(length + 1); // Выделяем память для подстроки плюс один символ для завершающего нуля
+	if (sub == NULL) 
+	{
+		return NULL; // Проверка на случай неудачного выделения памяти
+	}
+
+	strncpy(sub, &str[startIndex], length); // Копируем нужное количество символов из строки
+	sub[length] = '\0'; // Добавляем завершающий нуль-символ
+
+	return sub;
+}
+
 //--------------------------------------------
 
 void Bin2Dec(uint16_t data)
@@ -145,7 +188,6 @@ void SendString(volatile char * buffer)
 		SendChar(*buffer++);
 	}
 }
-
 
 void SendData (uint8_t data)
 {
