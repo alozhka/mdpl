@@ -4,6 +4,9 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
+#include <stdio.h>
+#include <string.h>
+
 
 uint8_t segments[] = 
 {
@@ -21,6 +24,9 @@ uint8_t segments[] =
 };
 volatile uint8_t bcd_buffer[] = { 0, 0, 0, 0 };
 volatile uint16_t display_val = 0;
+volatile uint8_t input_char_counter = 0;
+volatile char command[10] = "";
+volatile char* commandPtr = command;
 
 
 void InitPorts();
@@ -32,8 +38,9 @@ void InitSPI();
 void InitADC();
 void InitUSART();
 void SendChar(char symbol);
-void SendString(char* buffer);
-
+void SendString(volatile char* buffer);
+void clearCommand();
+void handleCommand(volatile const char* command);
 
 int main()
 {
@@ -77,32 +84,42 @@ ISR(ADC_vect)
 
 ISR(USART_RX_vect)
 {
-	if (UDR0 == 0x20)
+	uint8_t reseivedData = UDR0;
+	input_char_counter++;
+		
+	
+	if (reseivedData == 0x0D)
 	{
-		SendString("Roger that\r\n");
+		SendString("\r\n");
+		SendString(command);
+		SendString("\r\n");
+		handleCommand(command);
+		clearCommand();
+	}
+	else if (input_char_counter == 11)
+	{
+		SendString("\r\nMax string length must be less than 11 characters!\r\n");
+		clearCommand();
+	}
+	else
+	{
+		SendChar(reseivedData); //echo
+		*commandPtr++ = reseivedData;
 	}
 }
 
-//--------------------------------------------
+void clearCommand()
+{
+	input_char_counter = 0;
+	memset(command, 0, sizeof(command));
+	commandPtr = command;
+}
 
-void InitPorts()
+void handleCommand(volatile const char command[])
 {
-	DDRB = (1 << PINB0 | 1 << PINB1 | 1 << PINB3 | 1 << PINB5);
-	DDRD = (0 << PIND2);
-	PORTD |= (1 << PIND2);
+	
 }
-void InitTimer1()
-{
-	TCCR1A = 0;
-	//CTC mode - Clear Timer on Compare
-	//prescaler = sys_clk / 64
-	TCCR1B = (1 << CS11 | 1 << CS10 | 1 << WGM12);
-	TCNT1 = 0;
-	//start value of counter
-	TIMSK1 |= (1 << OCIE1B);
-	OCR1A = 1562;
-	OCR1B = 1562;
-}
+//--------------------------------------------
 
 void Bin2Dec(uint16_t data)
 {
@@ -114,6 +131,21 @@ void Bin2Dec(uint16_t data)
 	data = data % 10;
 	bcd_buffer[0] = (uint8_t) data;
 }
+
+void SendChar(char symbol)
+{
+	while (!(UCSR0A & (1 << UDRE0)));
+	UDR0 = symbol;
+}
+
+void SendString(volatile char * buffer)
+{
+	while(*buffer != 0)
+	{
+		SendChar(*buffer++);
+	}
+}
+
 
 void SendData (uint8_t data)
 {
@@ -132,6 +164,28 @@ void DisplayData (uint16_t data)
 	SendData(segments[bcd_buffer[3]]);
 	PORTB |= (1 << PINB1);
 	//clk_out = 1
+}
+
+//--------------------------------------------
+
+void InitPorts()
+{
+	DDRB = (1 << PINB0 | 1 << PINB1 | 1 << PINB3 | 1 << PINB5);
+	DDRD = (0 << PIND2);
+	PORTD |= (1 << PIND2);
+}
+
+void InitTimer1()
+{
+	TCCR1A = 0;
+	//CTC mode - Clear Timer on Compare
+	//prescaler = sys_clk / 64
+	TCCR1B = (1 << CS11 | 1 << CS10 | 1 << WGM12);
+	TCNT1 = 0;
+	//start value of counter
+	TIMSK1 |= (1 << OCIE1B);
+	OCR1A = 1562;
+	OCR1B = 1562;
 }
 
 void InitSPI()
@@ -158,18 +212,4 @@ void InitUSART()
 	UCSR0C = (1 << UCSZ01 | 1 << UCSZ00);
 	UBRR0H = 0;
 	UBRR0L = 0x0C;
-}
-
-void SendChar(char symbol)
-{
-	while (!(UCSR0A & (1 << UDRE0)));
-	UDR0 = symbol;
-}
-
-void SendString(char * buffer)
-{
-	while(*buffer != 0)
-	{
-		SendChar(*buffer++);
-	}
 }
