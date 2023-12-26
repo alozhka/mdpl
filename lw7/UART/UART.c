@@ -29,7 +29,7 @@ volatile uint8_t input_char_counter = 0;
 volatile char command[10] = "";
 volatile char* commandPtr = command;
 volatile uint8_t selectADC = 0;
-volatile uint8_t ADC0 = 0;
+volatile uint8_t ADC_buffer[] = { 0, 0, 0, 0 };
 
 
 void InitPorts();
@@ -42,9 +42,15 @@ void InitADC();
 void InitUSART();
 void SendChar(char symbol);
 void SendString(volatile char* buffer);
+
 void clearCommand();
 void handleCommand(volatile const char* command);
+
 char* getSubstring(volatile const char* str, int startIndex, int length);
+void ADCbin2Dec(volatile uint16_t data);
+void setADC0();
+void setADC1();
+
 
 int main()
 {
@@ -58,7 +64,7 @@ int main()
 	sei();
 	PORTB &= ~(1 << PINB0); //OE = low (active)
 	DisplayData(0);
-	SendString("Hello\r\n");
+	SendString("Welcome to terminal!\r\n");
 	while(1)
 	{
 		DisplayData(display_val);
@@ -83,20 +89,26 @@ ISR(INT0_vect)
 
 ISR(ADC_vect)
 {
-	ADC0 = ADC;
+	ADCbin2Dec(ADC);
 }
 
 ISR(USART_RX_vect)
 {
 	uint8_t reseivedData = UDR0;
 	input_char_counter++;
-		
+	
 	
 	if (reseivedData == 0x0D)
 	{
 		SendString("\r\n");
 		handleCommand(command);
 		clearCommand();
+	}
+	else if (reseivedData == 0x08)
+	{
+		input_char_counter--;
+		commandPtr--;
+		SendChar(0x08);
 	}
 	else if (input_char_counter == 11)
 	{
@@ -121,6 +133,9 @@ void handleCommand(volatile const char command[])
 {
 	if (strcmp(getSubstring(command, 0, 4), "set ") == 0) //set data to register
 	{
+		display_val = atoi(getSubstring(command, 4, 4));
+		
+		/*
 		int data = atoi(getSubstring(command, 4, 6));
 		if (data < 9999)
 		{
@@ -130,20 +145,41 @@ void handleCommand(volatile const char command[])
 		{
 			display_val = atoi(getSubstring(command, 4, 4));
 		}
+		*/
 	}
 	
 	if (strcmp(getSubstring(command, 0, 7), "select ") == 0)
 	{
 		selectADC = atoi(getSubstring(command, 7, 1));
-		SendString("Selected ADC: ");
-		SendString(getSubstring(command, 7, 1));
-		SendString("\r\n");
+		switch(selectADC)
+		{
+			case 0:
+				setADC0();
+				SendString("Selected ADC: ");
+				SendString(getSubstring(command, 7, 1));
+				SendString("\r\n");
+				break;
+			case 1:
+				setADC1();
+				SendString("Selected ADC: ");
+				SendString(getSubstring(command, 7, 1));
+				SendString("\r\n");
+				break;
+			default:
+				SendString("Invalid number of ADC!\r\n");
+		}
+		
 	}
 	
-	if (strcmp(getSubstring(command, 0, 6), "showADC") == 0)
+	if (strcmp(getSubstring(command, 0, 7), "showADC") == 0)
 	{
-		SendString("Value of ADC 0 = ");
-		SendString((char*)ADC0);
+		SendString("Value of ADC ");
+		SendChar('0' + selectADC);
+		SendString(" = ");
+		SendChar('0' + ADC_buffer[0]);
+		SendChar('0' + ADC_buffer[1]);
+		SendChar('0' + ADC_buffer[2]);
+		SendChar('0' + ADC_buffer[3]);
 		SendString("\r\n");
 	}
 }
@@ -163,6 +199,17 @@ char* getSubstring(volatile const char* str, int startIndex, int length)
 }
 
 //--------------------------------------------
+
+void ADCbin2Dec(volatile uint16_t data)
+{
+	ADC_buffer[3] = (uint8_t)(data / 1000);
+	data = data % 1000;
+	ADC_buffer[2] = (uint8_t)(data / 100);
+	data = data % 100;
+	ADC_buffer[1] = (uint8_t)(data / 10);
+	data = data % 10;
+	ADC_buffer[0] = (uint8_t) data;
+}
 
 void Bin2Dec(uint16_t data)
 {
@@ -238,6 +285,15 @@ void InitSPI()
 	SPCR = (1 << SPE | 1 << MSTR);
 	//init values - DAT low, CLK low
 	PORTB &= ~(1 << PINB3 | 1 << PINB5);
+}
+
+void setADC0()
+{
+	ADMUX = 0;
+}
+void setADC1()
+{
+	ADMUX = (1 << MUX0);
 }
 
 void InitADC()
