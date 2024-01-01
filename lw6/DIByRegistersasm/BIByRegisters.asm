@@ -1,13 +1,23 @@
 .equ arr_size = 10
 
-.def timer_temp = r16
-.def counter = r17
-.def temp = r18
-.def num_items = r19
-.def adapted_counter = r20
-.def iter = r21
+.def zero = r3
+.def buffer0 = r4
+.def buffer1 = r5
+.def buffer2 = r6
+.def buffer3 = r7
+
+.def counter_low = r24
+.def counter_high = r25
+.def counter_temp_low = r26
+.def counter_temp_high = r27
+.def counter_comparison_low = r30
+.def counter_comparison_high = r31
+.def timer_temp = r18
+.def temp = r19
+.def num_items = r20
+.def adapted_counter = r21
+.def iter = r22
 .def state = r23
-.def data = r24
 
 
 .dseg
@@ -35,14 +45,14 @@ main:
 	rcall setup
 
 	rcall display_data
+	rcall start_timer
 loop:
 	nop
 rjmp loop
 
 
 start_timer:
-	ldi timer_temp,0
-	sts 0x84,timer_temp ; TCNT1 = 0
+	sts 0x84,zero ; TCNT1 = 0
 	lds timer_temp,TIMSK1
 	ori timer_temp,2
 	sts TIMSK1,timer_temp ; TIMSK1 |= (1 << OCIE1A);
@@ -62,7 +72,8 @@ button_interrupt:
 	cpi state,0
 	brne else_stop
 		ldi state,1
-		ldi counter,0
+		ldi counter_low,0
+		ldi counter_high,0
 		rcall start_timer
 		rjmp button_interrupt_exit
 
@@ -70,20 +81,31 @@ button_interrupt:
 		rcall stop_timer
 		rcall display_data
 		ldi state,0
-		ldi counter,0
+		ldi counter_low,0
+		ldi counter_high,0
 
 	button_interrupt_exit:
 reti
 
 timer_interrupt:
-	inc counter
-	cpi counter,100
-	brlo skip_setter
-	ldi counter,0
 
-	skip_setter:
 	rcall display_data
 
+	movw counter_comparison_low,counter_low
+
+	cpi counter_comparison_low,0x0F	; старший байт = 15
+	sbci counter_comparison_high,0x27	; младший байт - 39 - C
+	brcc timer_load_zero				; if (counter < 9999)
+
+	adiw counter_low,1	; 16-битный счётчик + 1
+	rjmp timer_finish
+
+	timer_load_zero:
+
+		ldi counter_low,0
+		ldi counter_high,0
+
+	timer_finish:
 reti
 
 
@@ -91,13 +113,30 @@ reti
 
 
 display_data:
+
+	movw counter_temp_low,counter_low	;	это соответсвует переменной data в ф-ии Bin2Dec
+
 	cbi PORTB,1 ; le = 0
 
+	rcall find_thousands
+	rcall find_hundred
 	rcall find_dozens
+
+	mov buffer0,counter_temp_low
+
+	mov adapted_counter,buffer0
 	rcall get_number_from_array
 	rcall program_spi
 
-	rcall find_digits
+	mov adapted_counter,buffer1
+	rcall get_number_from_array
+	rcall program_spi
+
+	mov adapted_counter,buffer2
+	rcall get_number_from_array
+	rcall program_spi
+
+	mov adapted_counter,buffer3
 	rcall get_number_from_array
 	rcall program_spi
 
@@ -105,58 +144,87 @@ display_data:
 ret
 
 
+find_thousands:
+
+	ldi adapted_counter,0
+
+	thousands_loop:
+	movw counter_comparison_low,counter_temp_low
+
+	cpi counter_comparison_low,0xE9		;
+	sbci counter_comparison_high,0x03	; if(data > 1000)
+
+	brcs find_thousands_finish ; переход если < 1000
+		
+		inc adapted_counter
+		subi counter_temp_low,0xE8	;
+		sbci counter_temp_high,0x03	; data - 1000
+		rjmp thousands_loop
+
+	find_thousands_finish:
+	mov buffer3,adapted_counter
+ret
+
+find_hundred:
+	ldi adapted_counter,0
+	
+	hundred_loop:
+		cpi counter_temp_low,100
+		cpc counter_temp_high,zero
+		brcs find_hundred_finish
+
+		inc adapted_counter
+		subi counter_temp_low,100
+		sbc counter_temp_high,zero
+		rjmp hundred_loop
+
+	find_hundred_finish:
+	mov buffer2,adapted_counter
+ret
+
 find_dozens:
-		mov adapted_counter,counter
-		clr timer_temp
+	ldi adapted_counter,0
+
 	dozens_loop:
-		cpi adapted_counter,10
+		cpi counter_temp_low,10
 		brlo find_dozens_finish
 
-		subi adapted_counter,10
-		inc timer_temp
-	rjmp dozens_loop
+		inc adapted_counter
+		subi counter_temp_low,10
+		rjmp dozens_loop
 
 	find_dozens_finish:
-	mov adapted_counter,timer_temp
+	mov buffer1,adapted_counter
+
 ret
 
-
-find_digits:
-		mov adapted_counter,counter
-	digits_loop:
-		cpi adapted_counter,10
-		brlo find_digits_finish ; переход если < 10
-		subi adapted_counter,10
-	rjmp digits_loop
-
-	find_digits_finish:
-ret
 
 get_number_from_array:
 	; установка по индексу
 		add YL,adapted_counter
-		adc YH,temp
+		adc YH,zero
 		; получили сегмент
-		ld data,Y
+		ld temp,Y
 		; возвращение указателя обратно
 		sub YL,adapted_counter
-		sbc YH,temp
+		sbc YH,zero
 ret
 
 program_spi:
 	ldi iter,8
 	program_spi_loop:
-		lsl data
 
 		cbi PORTB,5	; clk = 0
 
-		sbrs data,7
+		sbrs temp,7
 		cbi PORTB,3
 
-		sbrc data,7
+		sbrc temp,7
 		sbi PORTB,3
 
 		sbi PORTB,5	; clk = 1
+
+		lsl temp
 
 		dec iter
 	brne program_spi_loop
@@ -180,6 +248,8 @@ copy_to_mapped:
 ret
 
 setup:
+	ldi temp,0
+	mov zero,temp
 	; установка
 	ldi temp,(1 << PINB5 | 1 << PINB3 | 1 << PINB1 | 1 << PINB0)
 	out DDRB,temp
@@ -211,7 +281,10 @@ setup:
 	ldi YL,Low(segments)
 
 	ldi temp,0
-	ldi state,0
+	ldi state,1
+
+	ldi counter_low,0x24
+	ldi counter_high,0
 ret
 
 

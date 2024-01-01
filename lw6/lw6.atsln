@@ -11,6 +11,10 @@ Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "DinamicIndicationBySPI", "D
 EndProject
 Project("{18226A42-8477-4023-8AD2-40C49DA407C9}") = "SPIasm", "SPIasm\SPIasm.asmproj", "{59B1D629-9DCC-43ED-A0FD-8AB0E4D622AB}"
 EndProject
+Project("{18226A42-8477-4023-8AD2-40C49DA407C9}") = "DIByRegistersasm", "DIByRegistersasm\DIByRegistersasm.asmproj", "{D4D319F2-C613-4A04-AE13-EC1D8A65E8CE}"
+EndProject
+Project("{18226A42-8477-4023-8AD2-40C49DA407C9}") = "DinamicIndicationasm", "DinamicIndicationasm\DinamicIndicationasm.asmproj", "{371A2DC3-11D3-4BEF-BE4A-8F27691B6975}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR
@@ -33,6 +37,14 @@ Global
 		{59B1D629-9DCC-43ED-A0FD-8AB0E4D622AB}.Debug|AVR.Build.0 = Debug|AVR
 		{59B1D629-9DCC-43ED-A0FD-8AB0E4D622AB}.Release|AVR.ActiveCfg = Release|AVR
 		{59B1D629-9DCC-43ED-A0FD-8AB0E4D622AB}.Release|AVR.Build.0 = Release|AVR
+		{D4D319F2-C613-4A04-AE13-EC1D8A65E8CE}.Debug|AVR.ActiveCfg = Debug|AVR
+		{D4D319F2-C613-4A04-AE13-EC1D8A65E8CE}.Debug|AVR.Build.0 = Debug|AVR
+		{D4D319F2-C613-4A04-AE13-EC1D8A65E8CE}.Release|AVR.ActiveCfg = Release|AVR
+		{D4D319F2-C613-4A04-AE13-EC1D8A65E8CE}.Release|AVR.Build.0 = Release|AVR
+		{371A2DC3-11D3-4BEF-BE4A-8F27691B6975}.Debug|AVR.ActiveCfg = Debug|AVR
+		{371A2DC3-11D3-4BEF-BE4A-8F27691B6975}.Debug|AVR.Build.0 = Debug|AVR
+		{371A2DC3-11D3-4BEF-BE4A-8F27691B6975}.Release|AVR.ActiveCfg = Release|AVR
+		{371A2DC3-11D3-4BEF-BE4A-8F27691B6975}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
