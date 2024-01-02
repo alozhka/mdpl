@@ -94,7 +94,7 @@ timer_interrupt:
 
 	cpi counter_low,0x0F				; старший байт = 15
 	cpc counter_high,comp_const_9999	; младший байт - 39 - C
-	brcc timer_load_zero							; if (counter < 9999)
+	brcc timer_load_zero				; if (counter < 9999)
 
 	adiw counter_low,1	; 16-битный счётчик + 1
 	rjmp timer_finish
