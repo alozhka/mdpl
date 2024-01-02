@@ -76,14 +76,14 @@ button_interrupt:
 reti
 
 timer_interrupt:
+	rcall display_data
+
 	inc counter
 	cpi counter,100
 	brlo skip_setter
 	ldi counter,0
 
 	skip_setter:
-	rcall display_data
-
 reti
 
 
