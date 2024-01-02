@@ -1,5 +1,7 @@
 .equ arr_size = 10
 
+.def comp_const_9999 = r1
+.def comp_const_1000 = r2
 .def zero = r3
 .def buffer0 = r4
 .def buffer1 = r5
@@ -10,8 +12,6 @@
 .def counter_high = r25
 .def counter_temp_low = r26
 .def counter_temp_high = r27
-.def counter_comparison_low = r30
-.def counter_comparison_high = r31
 .def timer_temp = r18
 .def temp = r19
 .def num_items = r20
@@ -90,11 +90,11 @@ timer_interrupt:
 
 	rcall display_data
 
-	movw counter_comparison_low,counter_low
+	movw counter_temp_low,counter_low
 
-	cpi counter_comparison_low,0x0F	; старший байт = 15
-	sbci counter_comparison_high,0x27	; младший байт - 39 - C
-	brcc timer_load_zero				; if (counter < 9999)
+	cpi counter_low,0x0F				; старший байт = 15
+	cpc counter_high,comp_const_9999	; младший байт - 39 - C
+	brcc timer_load_zero							; if (counter < 9999)
 
 	adiw counter_low,1	; 16-битный счётчик + 1
 	rjmp timer_finish
@@ -148,10 +148,9 @@ find_thousands:
 	ldi adapted_counter,0
 
 	thousands_loop:
-	movw counter_comparison_low,counter_temp_low
 
-	cpi counter_comparison_low,0xE9		;
-	sbci counter_comparison_high,0x03	; if(data > 1000)
+	cpi counter_temp_low,0xE9				;
+	cpc counter_temp_high,comp_const_1000	; if(data > 1000)
 
 	brcs find_thousands_finish ; переход если < 1000
 		
@@ -249,6 +248,10 @@ ret
 setup:
 	ldi temp,0
 	mov zero,temp
+	ldi temp,0x03				;
+	mov comp_const_1000,temp	; для сравнения с 1000
+	ldi temp,0x27
+	mov comp_const_9999,temp
 	; установка
 	ldi temp,(1 << PINB5 | 1 << PINB3 | 1 << PINB1 | 1 << PINB0)
 	out DDRB,temp
