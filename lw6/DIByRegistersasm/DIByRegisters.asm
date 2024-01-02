@@ -45,7 +45,6 @@ main:
 	rcall setup
 
 	rcall display_data
-	rcall start_timer
 loop:
 	nop
 rjmp loop
@@ -281,9 +280,9 @@ setup:
 	ldi YL,Low(segments)
 
 	ldi temp,0
-	ldi state,1
+	ldi state,0
 
-	ldi counter_low,0x24
+	ldi counter_low,0
 	ldi counter_high,0
 ret
 

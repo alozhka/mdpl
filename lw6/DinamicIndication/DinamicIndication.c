@@ -83,7 +83,7 @@ void InitPorts(void)
 	DDRB = 0xFF;
 	DDRC = (1 << PC0 | 1 << PC1 | 1 << PC2 | 1 << PC3);
 	PORTC = 0x0F;
-	DDRD = (0 << PD2);
+	DDRD &= ~(1 << PD2);
 	PORTD |= (1 << PD2);
 }
 void send_data(uint8_t data, uint8_t ind)
@@ -101,7 +101,7 @@ void InitTimer0(void)
 	TCCR0B = (1 << CS02 | 1 << CS00);//prescaler = sys_clk/1024
 	TCNT0 = 0x00; //начальное значение счетчика
 	OCR0A = 16; //порог срабатывания
-	TIMSK0 |= (1<<OCIE0A); //включение прерывания при достижении порога А
+	TIMSK0 |= (1 << OCIE0A); //включение прерывания при достижении порога А
 }
 void Bin2Dec(uint16_t data)
 {

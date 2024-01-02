@@ -15,7 +15,7 @@
     <Name>DIByRegistersasm</Name>
     <RootNamespace>DIByRegistersasm</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
-    <EntryFile>$(MSBuildProjectDirectory)\BIByRegisters.asm</EntryFile>
+    <EntryFile>$(MSBuildProjectDirectory)\DIByRegisters.asm</EntryFile>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
     <CacheFlash>true</CacheFlash>
@@ -80,7 +80,7 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="BIByRegisters.asm">
+    <Compile Include="DIByRegisters.asm">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
